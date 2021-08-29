@@ -1,5 +1,6 @@
 package com.nurkiewicz.jsonstreaming;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,23 +10,24 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.time.Instant;
 
+import static org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
 
 @RestController
 public class StreamingController {
 
-    @GetMapping(value = "/sse", produces = TEXT_EVENT_STREAM_VALUE)
+    @GetMapping
+    Flux<Data> array(@RequestParam(value = "fail", required = false, defaultValue = "false") boolean fail) {
+        return source(fail);
+    }
+
+    @GetMapping(produces = TEXT_EVENT_STREAM_VALUE)
     Flux<Data> sse(@RequestParam(value = "fail", required = false, defaultValue = "false") boolean fail) {
         return source(fail);
     }
 
-    @GetMapping(value = "/ndjson", produces = "application/x-ndjson")
+    @GetMapping(produces = APPLICATION_NDJSON_VALUE)
     Flux<Data> ndjson(@RequestParam(value = "fail", required = false, defaultValue = "false") boolean fail) {
-        return source(fail);
-    }
-
-    @GetMapping(value = "/array")
-    Flux<Data> array(@RequestParam(value = "fail", required = false, defaultValue = "false") boolean fail) {
         return source(fail);
     }
 
