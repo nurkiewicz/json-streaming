@@ -1,6 +1,5 @@
 package com.nurkiewicz.jsonstreaming;
 
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,11 +15,6 @@ import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
 @RestController
 public class StreamingController {
 
-    @GetMapping
-    Flux<Data> array(@RequestParam(value = "fail", required = false, defaultValue = "false") boolean fail) {
-        return source(fail);
-    }
-
     @GetMapping(produces = TEXT_EVENT_STREAM_VALUE)
     Flux<Data> sse(@RequestParam(value = "fail", required = false, defaultValue = "false") boolean fail) {
         return source(fail);
@@ -28,6 +22,11 @@ public class StreamingController {
 
     @GetMapping(produces = APPLICATION_NDJSON_VALUE)
     Flux<Data> ndjson(@RequestParam(value = "fail", required = false, defaultValue = "false") boolean fail) {
+        return source(fail);
+    }
+
+    @GetMapping
+    Flux<Data> array(@RequestParam(value = "fail", required = false, defaultValue = "false") boolean fail) {
         return source(fail);
     }
 
@@ -48,4 +47,20 @@ public class StreamingController {
 
 }
 
+class Data {
+    private final long seqNo;
+    private final Instant timestamp;
 
+    Data(long seqNo, Instant timestamp) {
+        this.seqNo = seqNo;
+        this.timestamp = timestamp;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
+    public long getSeqNo() {
+        return seqNo;
+    }
+}
